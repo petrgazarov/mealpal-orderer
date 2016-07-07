@@ -52,8 +52,8 @@ class MealpassOrderer
     driver.get "https://mealpass.com/login"
     wait.until { driver.find_element(:name, "email").displayed? }
 
-    driver.find_element(:name, "email").send_keys("petrgazarov@gmail.com")
-    driver.find_element(:name, "password").send_keys("n7T1351#2%f@")
+    driver.find_element(:name, "email").send_keys(ENV['MEALPASS_EMAIL'])
+    driver.find_element(:name, "password").send_keys(ENV['MEALPASS_PASSWORD'])
 
     driver.find_element(:xpath, '//button[contains(., "Log in")]').click
 
