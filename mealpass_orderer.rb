@@ -13,35 +13,40 @@ class MealpassOrderer
   end
 
   def run
-    login
+    begin
+      login
 
-    (driver.close; return) if meal_reserved?
+      (driver.close; return) if meal_reserved?
 
-    enter_address
+      enter_address
 
+      num_choices = driver.find_elements(:css, '.meal').length
+      pick_number = (0...num_choices).to_a.sample
 
-    num_choices = driver.find_elements(:css, '.meal').length
-    pick_number = (0...num_choices).to_a.sample
+      driver.find_elements(:css, '.meal')[pick_number].click
 
-    driver.find_elements(:css, '.meal')[pick_number].click
+      wait.until do
+        driver
+          .find_elements(:css, '.meal')[pick_number]
+          .find_element(:xpath, "//span[contains(., 'PICKUP TIME')]").displayed?
+      end
 
-    wait.until do
       driver
         .find_elements(:css, '.meal')[pick_number]
-        .find_element(:xpath, "//span[contains(., 'PICKUP TIME')]").displayed?
+        .find_element(:xpath, "//span[text()='PICKUP TIME']").click
+
+      driver.find_element(:xpath, "//span[text()='PICKUP TIME']").click
+
+      # driver.find_element(:xpath,"//input[@value='SUBMIT']").click
+      # driver.find_element(:xpath,"//input[@value='PICKUP TIME']").click
+      # driver.find_element(:xpath,"//input[@value='RESERVE NOW']").click
+
+    rescue Exception => e
+      error_log_entry = "\n===========================\n#{Time.now}\n#{e}"
+      File.open('error_log.log', 'w') { |file| file.write(error_log_entry) }
+    ensure
+      driver.close
     end
-
-    driver
-      .find_elements(:css, '.meal')[pick_number]
-      .find_element(:xpath, "//span[text()='PICKUP TIME']").click
-
-    driver.find_element(:xpath, "//span[text()='PICKUP TIME']").click
-
-    # driver.find_element(:xpath,"//input[@value='SUBMIT']").click
-    # driver.find_element(:xpath,"//input[@value='PICKUP TIME']").click
-    # driver.find_element(:xpath,"//input[@value='RESERVE NOW']").click
-
-    driver.close
   end
 
   attr_reader :driver, :wait
