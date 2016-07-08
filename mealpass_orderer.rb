@@ -10,63 +10,70 @@ class MealpassOrderer
   def initialize
     @driver = Selenium::WebDriver.for :chrome
     @wait = Selenium::WebDriver::Wait.new(:timeout => 15)
+    @retries = 0
   end
 
   def run
     begin
-      login
+      driver.get "https://mealpass.com/login"
 
-      (driver.close; return) if meal_reserved?
+      login unless logged_in?
+
+      wait.until { driver.title.downcase == 'mealpass | portal' }
+
+      rate_meal if rate_meal_required?
+
+      raise 'Meal already reserved' if meal_reserved?
 
       enter_address
 
-      num_choices = driver.find_elements(:css, '.meal').length
-      pick_number = (0...num_choices).to_a.sample
-
-      driver.find_elements(:css, '.meal')[pick_number].click
-
-      wait.until do
-        driver
-          .find_elements(:css, '.meal')[pick_number]
-          .find_element(:xpath, "//span[contains(., 'PICKUP TIME')]").displayed?
-      end
-
-      driver
-        .find_elements(:css, '.meal')[pick_number]
-        .find_element(:xpath, "//span[text()='PICKUP TIME']").click
-
-      driver.find_element(:xpath, "//span[text()='PICKUP TIME']").click
-
-      # driver.find_element(:xpath,"//input[@value='SUBMIT']").click
-      # driver.find_element(:xpath,"//input[@value='PICKUP TIME']").click
-      # driver.find_element(:xpath,"//input[@value='RESERVE NOW']").click
+      select_meal
 
     rescue Exception => e
       error_log_entry = "\n===========================\n#{Time.now}\n#{e}"
-      File.open('error_log.log', 'w') { |file| file.write(error_log_entry) }
+      File.open('error_log.log', 'a') { |file| file << error_log_entry }
+      puts e # REMOVE ME
+
+      self.retries += 1
+      retry unless used_all_retry_attempts
     ensure
       driver.close
     end
   end
 
-  attr_reader :driver, :wait
+  attr_accessor :retries
 
   private
 
   def login
-    driver.get "https://mealpass.com/login"
     wait.until { driver.find_element(:name, "email").displayed? }
 
     driver.find_element(:name, "email").send_keys(ENV['MEALPASS_EMAIL'])
     driver.find_element(:name, "password").send_keys(ENV['MEALPASS_PASSWORD'])
 
     driver.find_element(:xpath, '//button[contains(., "Log in")]').click
+  end
 
-    wait.until { driver.title.downcase == 'mealpass | portal' }
+  def logged_in?
+    driver.manage.cookie_named('isLoggedIn')
   end
 
   def meal_reserved?
     driver.page_source.include? 'Your meal is reserved'
+  end
+
+  def rate_meal_required?
+    driver.page_source.include? 'Rate your meal!'
+  end
+
+  def rate_meal
+    wait.until { driver.find_elements(:xpath, "//span[contains(@class, 'star')]")[3].displayed? }
+    # rate as a "4" (good)
+    driver.find_elements(:xpath, "//span[contains(@class, 'star')]")[3].click
+    # rate as a medium size portion
+    driver.find_elements(:xpath, "//span[contains(@class, 'portion ng-scope')]")[1].click
+
+    driver.find_element(:xpath, '//span[contains(., "SUBMIT")]').click
   end
 
   def enter_address
@@ -79,6 +86,44 @@ class MealpassOrderer
 
     wait.until { driver.find_element(:css, '.lazy-loading').displayed? }
   end
-end
 
-MealpassOrderer.run
+  def select_meal
+    num_choices = driver.find_elements(:css, '.meal').length
+    pick_number = (0...num_choices).to_a.sample
+
+    wait.until { driver.find_elements(:css, '.meal')[pick_number].displayed? }
+
+    driver
+      .find_elements(:css, '.meal')[pick_number]
+      .find_elements(:css, '.name')[0]
+      .click
+
+    wait.until do
+      driver
+        .find_elements(:css, '.meal')[pick_number]
+        .find_element(:css, '.mp-pickup-button')
+        .displayed?
+    end
+
+    driver
+      .find_elements(:css, '.meal')[pick_number]
+      .find_element(:css, '.mp-pickup-button')
+      .click
+
+    wait.until do
+      driver
+        .find_elements(:css, '.meal')[pick_number].find_element(:css, "li")
+        .displayed?
+    end
+
+    driver.find_elements(:css, '.meal')[pick_number].find_element(:css, "li").click
+
+    driver.find_elements(:css, '.meal')[pick_number].find_element(:css, '.mp-reserve-button').click
+  end
+
+  def used_all_retry_attempts
+    retries == 3
+  end
+
+  attr_reader :driver, :wait
+end
