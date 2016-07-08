@@ -1,3 +1,3 @@
-require 'lib/mealpass_orderer'
+require_relative '../lib/mealpass_orderer'
 
 MealpassOrderer.run
