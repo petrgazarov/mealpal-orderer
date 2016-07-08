@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'selenium-webdriver'
-require 'pry'
 
 class MealpassOrderer
   def self.run
