@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'selenium-webdriver'
 
+Selenium::WebDriver::Chrome.driver_path = 'chromedriver'
+
 class MealpassOrderer
   def self.run
     new.run
