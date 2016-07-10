@@ -34,9 +34,7 @@ class MealpassOrderer
       select_meal
 
     rescue Exception => e
-      error_log_entry = "\n===========================\n#{Time.now}\n#{e}"
-      File.open('error_log.log', 'a') { |file| file << error_log_entry }
-      puts e # REMOVE ME
+      log_error(e)
 
       self.retries += 1
       retry unless used_all_retry_attempts
@@ -103,7 +101,7 @@ class MealpassOrderer
 
     driver
       .find_elements(:css, '.meal')[pick_number]
-      .find_elements(:css, '.name')[0]
+      .find_elements(:css, '.name')[1]
       .click
 
     wait.until do
@@ -127,6 +125,12 @@ class MealpassOrderer
     driver.find_elements(:css, '.meal')[pick_number].find_element(:css, "li").click
 
     driver.find_elements(:css, '.meal')[pick_number].find_element(:css, '.mp-reserve-button').click
+  end
+
+  def log_error(e)
+    error_log_entry = "\n===========================\n#{Time.now}\n#{e}"
+    File.open('error_log.log', 'a') { |file| file << error_log_entry }
+    puts e # REMOVE ME
   end
 
   def used_all_retry_attempts
