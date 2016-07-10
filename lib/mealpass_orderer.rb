@@ -22,6 +22,8 @@ class MealpassOrderer
 
       wait.until { driver.title.downcase == 'mealpass | portal' }
 
+      raise 'Kitchen closed' if kitchen_closed?
+
       rate_meal if rate_meal_required?
 
       raise 'Meal already reserved' if meal_reserved?
@@ -61,6 +63,10 @@ class MealpassOrderer
 
   def meal_reserved?
     driver.page_source.include? 'Your meal is reserved'
+  end
+
+  def kitchen_closed?
+    driver.page_source.include? 'The kitchen is closed'
   end
 
   def rate_meal_required?
