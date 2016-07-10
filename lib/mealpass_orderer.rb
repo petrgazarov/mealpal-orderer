@@ -1,9 +1,10 @@
 require 'rubygems'
 require 'selenium-webdriver'
 
-Selenium::WebDriver::Chrome.driver_path = 'chromedriver'
-
 class MealpassOrderer
+
+  NUM_RETRIES = 3
+
   def self.run
     new.run
   end
@@ -129,7 +130,7 @@ class MealpassOrderer
   end
 
   def used_all_retry_attempts
-    retries == 3
+    retries == NUM_RETRIES
   end
 
   attr_reader :driver, :wait
