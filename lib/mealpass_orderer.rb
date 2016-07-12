@@ -12,6 +12,7 @@ class MealpassOrderer
 
   def initialize
     @driver = Watir::Browser.new :phantomjs
+    delete_cookies
     driver.window.resize_to(1200, 1200)
     @wait = Watir::Wait
     @retries = 0
@@ -122,6 +123,10 @@ class MealpassOrderer
 
   def used_all_retry_attempts
     retries == NUM_RETRIES
+  end
+
+  def delete_cookies
+    driver.cookies.clear
   end
 
   attr_reader :driver, :wait
