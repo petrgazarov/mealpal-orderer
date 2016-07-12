@@ -1,5 +1,6 @@
 require 'rubygems'
-require 'selenium-webdriver'
+require 'watir-webdriver'
+
 
 class MealpassOrderer
 
@@ -10,18 +11,19 @@ class MealpassOrderer
   end
 
   def initialize
-    @driver = Selenium::WebDriver.for :chrome
-    @wait = Selenium::WebDriver::Wait.new(:timeout => 15)
+    @driver = Watir::Browser.new :phantomjs
+    driver.window.resize_to(1200, 1200)
+    @wait = Watir::Wait
     @retries = 0
   end
 
   def run
     begin
-      driver.get "https://mealpass.com/login"
+      driver.goto "https://mealpass.com/login"
 
       login unless logged_in?
 
-      wait.until { driver.title.downcase == 'mealpass | portal' }
+      wait.until { driver.text.include? "WHAT'S FOR LUNCH ?" }
 
       raise 'Kitchen closed' if kitchen_closed?
 
@@ -48,83 +50,68 @@ class MealpassOrderer
   private
 
   def login
-    wait.until { driver.find_element(:name, "email").displayed? }
+    driver.text_field(:name, "email").when_present.set(ENV['MEALPASS_EMAIL'])
+    driver.text_field(:name, "password").set(ENV['MEALPASS_PASSWORD'])
 
-    driver.find_element(:name, "email").send_keys(ENV['MEALPASS_EMAIL'])
-    driver.find_element(:name, "password").send_keys(ENV['MEALPASS_PASSWORD'])
-
-    driver.find_element(:xpath, '//button[contains(., "Log in")]').click
+    driver.button(:text, "Log in").click
   end
 
   def logged_in?
-    driver.manage.cookie_named('isLoggedIn')
+    !driver.cookies.to_a.select { |c| c[:domain] =~ /mealpass.com/ }.empty?
   end
 
   def meal_reserved?
-    driver.page_source.include? 'Your meal is reserved'
+    driver.text.include? 'Your meal is reserved'
   end
 
   def kitchen_closed?
-    driver.page_source.include? 'The kitchen is closed'
+    driver.text.include? 'The kitchen is closed'
   end
 
   def rate_meal_required?
-    driver.page_source.include? 'Rate your meal!'
+    driver.text.include? 'Rate your meal!'
   end
 
   def rate_meal
-    wait.until { driver.find_elements(:xpath, "//span[contains(@class, 'star')]")[3].displayed? }
     # rate as a "4" (good)
-    driver.find_elements(:xpath, "//span[contains(@class, 'star')]")[3].click
+    driver.spans(class_name: 'star')[3].click
     # rate as a medium size portion
-    driver.find_elements(:xpath, "//span[contains(@class, 'portion ng-scope')]")[1].click
+    driver.spans(class_name: 'portion ng-scope')[1].click
 
-    driver.find_element(:xpath, '//span[contains(., "SUBMIT")]').click
+    driver.button(:text, "SUBMIT").click
   end
 
   def enter_address
-    wait.until { driver.find_element(:xpath, "//input[@placeholder='Search Location ...']").displayed? }
     driver
-      .find_element(:xpath, "//input[@placeholder='Search Location ...']")
-      .send_keys('22 West 19th Street, New York, NY, United States')
+      .text_field { input(:placeholder => 'Search Location ...') }
+      .set('22 West 19th Street, New York, NY, United States')
 
-    driver.action.send_keys(:enter).perform
-
-    wait.until { driver.find_element(:css, '.lazy-loading').displayed? }
+    driver.send_keys :enter
   end
 
   def select_meal
-    num_choices = driver.find_elements(:css, '.meal').length
+    wait.until { driver.spans(:css, '.meal').length && driver.spans(:css, '.meal').length > 0 }
+    sleep 10
+    num_choices = driver.spans(:css, '.meal').length
     pick_number = (0...num_choices).to_a.sample
 
-    wait.until { driver.find_elements(:css, '.meal')[pick_number].displayed? }
+    driver
+      .spans(:css, '.meal')[pick_number]
+      .div(:css, '.address').click
 
     driver
-      .find_elements(:css, '.meal')[pick_number]
-      .find_elements(:css, '.name')[1]
-      .click
-
-    wait.until do
-      driver
-        .find_elements(:css, '.meal')[pick_number]
-        .find_element(:css, '.mp-pickup-button')
-        .displayed?
-    end
+      .spans(:css, '.meal')[pick_number]
+      .button(class_name: 'mp-pickup-button').click
 
     driver
-      .find_elements(:css, '.meal')[pick_number]
-      .find_element(:css, '.mp-pickup-button')
+      .spans(:css, '.meal')[pick_number]
+      .ul(:class_name => 'pickupTimes-list')
+      .lis.find { |li| li.text == '12:00pm-12:15pm' }
       .click
 
-    wait.until do
-      driver
-        .find_elements(:css, '.meal')[pick_number].find_element(:css, "li")
-        .displayed?
-    end
-
-    driver.find_elements(:css, '.meal')[pick_number].find_element(:css, "li").click
-
-    driver.find_elements(:css, '.meal')[pick_number].find_element(:css, '.mp-reserve-button').click
+    driver
+      .spans(:css, '.meal')[pick_number]
+      .button(text: 'RESERVE NOW').click
   end
 
   def log_error(e)
