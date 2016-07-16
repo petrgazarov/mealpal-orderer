@@ -14,8 +14,7 @@ class MealpassOrderer
 
   def run
     begin
-      # remove watir cookies and phantomjs local storage
-      system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
+      # remove watir cookies
       delete_cookies
 
       driver.goto "https://mealpass.com/login"
@@ -44,6 +43,8 @@ class MealpassOrderer
 
       false
     ensure
+      puts 'closing driver'
+
       driver.close
 
       false
@@ -119,6 +120,7 @@ class MealpassOrderer
     log_entry = "\n===========================\n#{Time.now}\n#{message}"
 
     File.open('log.log', 'a') { |file| file << log_entry }
+
     puts message
   end
 

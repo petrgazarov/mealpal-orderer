@@ -8,8 +8,10 @@ module Clockwork
     puts "Running #{job}"
   end
 
-  every(6.minutes, 'Run a job', tz: 'UTC') do
+  every(3.minutes, 'Run a job', tz: 'UTC') do
     RETRY_ATTEMPTS.times do
+      system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
+
       break if MealpassOrderer.run
     end
   end
