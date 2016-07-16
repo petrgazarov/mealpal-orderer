@@ -1,6 +1,4 @@
-require 'rubygems'
 require 'watir-webdriver'
-
 
 class MealpassOrderer
 
@@ -12,7 +10,6 @@ class MealpassOrderer
 
   def initialize
     @driver = Watir::Browser.new :phantomjs
-    delete_cookies
     driver.window.resize_to(1200, 1200)
     @wait = Watir::Wait
     @retries = 0
@@ -20,7 +17,13 @@ class MealpassOrderer
 
   def run
     begin
+      # remove watir cookies and phantomjs local storage
+      system 'rm /.local/share/Ofi\ Labs/PhantomJS/*'
+      delete_cookies
+
       driver.goto "https://mealpass.com/login"
+
+      wait.until { driver.text.include? "Log in to your MealPass account" }
 
       login
 
