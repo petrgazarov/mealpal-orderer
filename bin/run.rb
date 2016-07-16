@@ -1,3 +1,7 @@
 require_relative '../lib/mealpass_orderer'
 
-MealpassOrderer.run
+RETRY_ATTEMPTS = 3
+
+RETRY_ATTEMPTS.times do
+  break if MealpassOrderer.run
+end

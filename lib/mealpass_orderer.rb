@@ -1,9 +1,6 @@
 require 'watir-webdriver'
 
 class MealpassOrderer
-
-  NUM_RETRIES = 3
-
   def self.run
     new.run
   end
@@ -39,13 +36,16 @@ class MealpassOrderer
 
       select_meal
 
+      true
+
     rescue Exception => e
       log_error(e)
 
-      self.retries += 1
-      retry unless used_all_retry_attempts
+      false
     ensure
       driver.close
+
+      false
     end
   end
 
@@ -117,11 +117,7 @@ class MealpassOrderer
   def log_error(e)
     error_log_entry = "\n===========================\n#{Time.now}\n#{e}"
     File.open('error_log.log', 'a') { |file| file << error_log_entry }
-    puts e # REMOVE ME
-  end
-
-  def used_all_retry_attempts
-    retries == NUM_RETRIES
+    puts e
   end
 
   def delete_cookies
