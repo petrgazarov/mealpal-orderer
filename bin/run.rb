@@ -8,7 +8,13 @@ module Clockwork
     puts "Running #{job}"
   end
 
-  every(3.minutes, 'Run a job', tz: 'UTC') do
+  every(1.day, 'Run a job', tz: 'UTC', at: '7:05pm') do
+    if [5, 6].include? Time.now.wday
+      puts 'not ordering today'
+
+      return
+    end
+
     RETRY_ATTEMPTS.times do
       system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
 
