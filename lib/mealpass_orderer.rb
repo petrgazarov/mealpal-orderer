@@ -22,7 +22,7 @@ class MealpassOrderer
     begin
       driver.goto "https://mealpass.com/login"
 
-      login unless logged_in?
+      login
 
       wait.until { driver.text.include? "WHAT'S FOR LUNCH ?" }
 
@@ -55,10 +55,6 @@ class MealpassOrderer
     driver.text_field(:name, "password").set(ENV['MEALPASS_PASSWORD'])
 
     driver.button(:text, "Log in").click
-  end
-
-  def logged_in?
-    !driver.cookies.to_a.select { |c| c[:domain] =~ /mealpass.com/ }.empty?
   end
 
   def meal_reserved?
