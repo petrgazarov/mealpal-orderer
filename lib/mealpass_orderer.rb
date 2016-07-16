@@ -36,10 +36,11 @@ class MealpassOrderer
 
       select_meal
 
+      log('Ordered :)')
       true
 
     rescue Exception => e
-      log_error(e)
+      log(e)
 
       false
     ensure
@@ -114,10 +115,11 @@ class MealpassOrderer
       .button(text: 'RESERVE NOW').click
   end
 
-  def log_error(e)
-    error_log_entry = "\n===========================\n#{Time.now}\n#{e}"
-    File.open('error_log.log', 'a') { |file| file << error_log_entry }
-    puts e
+  def log(message)
+    log_entry = "\n===========================\n#{Time.now}\n#{message}"
+
+    File.open('log.log', 'a') { |file| file << log_entry }
+    puts message
   end
 
   def delete_cookies
