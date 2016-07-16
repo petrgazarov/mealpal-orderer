@@ -18,7 +18,7 @@ class MealpassOrderer
   def run
     begin
       # remove watir cookies and phantomjs local storage
-      system 'rm /.local/share/Ofi\ Labs/PhantomJS/*'
+      system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
       delete_cookies
 
       driver.goto "https://mealpass.com/login"
