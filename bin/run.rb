@@ -1,7 +1,16 @@
 require_relative '../lib/mealpass_orderer'
+require 'clockwork'
 
-RETRY_ATTEMPTS = 3
+module Clockwork
+  RETRY_ATTEMPTS = 3
 
-RETRY_ATTEMPTS.times do
-  break if MealpassOrderer.run
+  handler do |job|
+    puts "Running #{job}"
+  end
+
+  every(6.minutes, 'Run a job', tz: 'UTC') do
+    RETRY_ATTEMPTS.times do
+      break if MealpassOrderer.run
+    end
+  end
 end
