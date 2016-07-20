@@ -1,0 +1,14 @@
+- if flash[:message]
+  h2 style='color:green;'
+    = flash[:message]
+
+h1 Welcome to Mealpass Orderer
+= image_tag 'http://media2.giphy.com/gifsu/l2JdXlUFfoApDJ8Ry/giphy-glitter.gif'
+
+= simple_form_for @user do |f|
+  = f.input :mealpass_email, type: :email, required: true
+  br
+  = f.input :mealpass_password, type: :password, required: true
+  br
+  = f.submit 'Yes, order mealpass for me'
+

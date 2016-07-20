@@ -1,15 +1,16 @@
 require 'watir-webdriver'
 
-class MealpassOrderer
-  def self.run
-    new.run
+class Orderer
+  def self.run(user)
+    new(user).run
   end
 
-  def initialize
+  def initialize(user)
     @driver = Watir::Browser.new :phantomjs
-    driver.window.resize_to(1200, 1200)
     @wait = Watir::Wait
-    @retries = 0
+    @user = user
+
+    driver.window.resize_to(1200, 1200)
   end
 
   def run
@@ -51,13 +52,11 @@ class MealpassOrderer
     end
   end
 
-  attr_accessor :retries
-
   private
 
   def login
-    driver.text_field(:name, "email").when_present.set(ENV['MEALPASS_EMAIL'])
-    driver.text_field(:name, "password").set(ENV['MEALPASS_PASSWORD'])
+    driver.text_field(:name, "email").when_present.set(user.mealpass_email)
+    driver.text_field(:name, "password").set(user.mealpass_password)
 
     driver.button(:text, "Log in").click
   end
@@ -119,7 +118,7 @@ class MealpassOrderer
   def log(message)
     log_entry = "\n===========================\n#{Time.now}\n#{message}"
 
-    File.open('log.log', 'a') { |file| file << log_entry }
+    File.open('log/log.log', 'a') { |file| file << log_entry }
 
     puts message
   end
@@ -128,5 +127,5 @@ class MealpassOrderer
     driver.cookies.clear
   end
 
-  attr_reader :driver, :wait
+  attr_reader :driver, :wait, :user
 end

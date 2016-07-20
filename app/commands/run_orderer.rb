@@ -1,5 +1,6 @@
-require_relative '../lib/mealpass_orderer'
 require 'clockwork'
+require './config/boot'
+require './config/environment'
 
 module Clockwork
   RETRY_ATTEMPTS = 3
@@ -12,10 +13,12 @@ module Clockwork
     if [5, 6].include? Time.now.wday
       puts 'not ordering today'
     else
-      RETRY_ATTEMPTS.times do
-        system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
+      User.all.each do |user|
+        RETRY_ATTEMPTS.times do
+          system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
 
-        break if MealpassOrderer.run
+          break if Orderer.run(user)
+        end
       end
     end
   end
