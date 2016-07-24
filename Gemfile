@@ -6,6 +6,9 @@ gem 'slim'
 gem 'simple_form'
 gem 'uglifier'
 gem 'puma'
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'sass-rails', '>= 3.2'
+gem 'sprockets-rails', :require => 'sprockets/railtie'
 
 gem 'watir-webdriver'
 gem 'clockwork'
@@ -20,6 +23,7 @@ end
 
 group :development do
   gem 'web-console', '~> 2.0'
+  gem 'better_errors'
 
   gem 'spring'
 end

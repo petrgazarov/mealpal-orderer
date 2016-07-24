@@ -1,14 +1,22 @@
-- if flash[:message]
-  h2 style='color:green;'
-    = flash[:message]
+.row.col-sm-12.col-xs-12
+  - if flash[:message]
+    h2 style='color:green;'
+      = flash[:message]
 
-h1 Welcome to Mealpass Orderer
-= image_tag 'mealpass-orderer.gif'
+  = simple_form_for @user do |f|
+    .input-group
+      = f.input :mealpass_email,
+                type: :email,
+                required: true,
+                input_html: { class: 'form-control' },
+                wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' }
+      = f.input :mealpass_password,
+                type: :password,
+                required: true,
+                input_html: { class: 'form-control' },
+                wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' }
 
-= simple_form_for @user do |f|
-  = f.input :mealpass_email, type: :email, required: true
-  br
-  = f.input :mealpass_password, type: :password, required: true
-  br
-  = f.submit 'Yes, order mealpass for me'
+    .input-group-btn style='padding-top: 20px'
+      = f.submit 'Yes, order mealpass for me',
+                 class: 'btn btn-default'
 
