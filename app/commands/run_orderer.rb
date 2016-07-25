@@ -9,7 +9,7 @@ module Clockwork
     puts "Running #{job}"
   end
 
-  every(1.day, 'Order mealpass', tz: 'America/New_York', at: '19:05') do
+  every(1.day, 'Order mealpass', tz: 'America/New_York', at: '23:02') do
     if [5, 6].include? Time.now.wday
       puts 'not ordering today'
     else
