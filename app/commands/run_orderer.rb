@@ -23,18 +23,11 @@ module Clockwork
             break if Orderer.run(user)
 
             rescue Exception => e
-              log(e)
+              log_entry = "\n===========================\n#{Time.now}\n#{e.message}"
+              File.open('log/log.log', 'a') { |file| file << log_entry }
           end
         end
       end
     end
-  end
-
-  def log(message)
-    log_entry = "\n===========================\n#{Time.now}\n#{message}"
-
-    File.open('log/log.log', 'a') { |file| file << log_entry }
-
-    puts message
   end
 end
