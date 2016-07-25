@@ -14,12 +14,27 @@ module Clockwork
       puts 'not ordering today'
     else
       User.all.each do |user|
-        RETRY_ATTEMPTS.times do
-          system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
+        return unless user.order_days.include?((Time.now.wday + 1).to_s)
 
-          break if Orderer.run(user)
+        RETRY_ATTEMPTS.times do
+          begin
+            system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
+
+            break if Orderer.run(user)
+
+            rescue Exception => e
+              log(e)
+          end
         end
       end
     end
+  end
+
+  def log(message)
+    log_entry = "\n===========================\n#{Time.now}\n#{message}"
+
+    File.open('log/log.log', 'a') { |file| file << log_entry }
+
+    puts message
   end
 end

@@ -1,22 +1,48 @@
 .row.col-sm-12.col-xs-12
+  .panel.panel-default
+    .panel-body
+      | Enter your Mealpass credentials below and I will order a random mealpass for you at 7:05pm on the days you select. 
+      | If you enter existing information, I will update your record for you. 
+      | (to cancel, deselect all days)
+
   - if flash[:message]
-    h2 style='color:green;'
+    h2.alert.alert-success
       = flash[:message]
+  - if flash[:error]
+    h2.alert.alert-danger
+      = flash[:error]
 
   = simple_form_for @user do |f|
-    .input-group
-      = f.input :mealpass_email,
-                type: :email,
-                required: true,
-                input_html: { class: 'form-control' },
-                wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' }
-      = f.input :mealpass_password,
-                type: :password,
-                required: true,
-                input_html: { class: 'form-control' },
-                wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' }
+    = f.input :mealpass_email,
+              type: :email,
+              required: true,
+              input_html: { class: 'form-control' },
+              wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+              label: false,
+              placeholder: 'Mealpass email'
+
+    = f.input :mealpass_password,
+              type: :password,
+              required: true,
+              input_html: { class: 'form-control' },
+              wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+              label: false,
+              placeholder: 'Mealpass password'
+
+    - [['Mon', 1], ['Tue', 2], ['Wed', 3], ['Thu', 4], ['Fri', 5]].each do |day|
+      .checkbox.checkbox-inline.checkbox-primary style='padding-top: 20px'
+        input[
+               name='user[order_days][]'
+               type='checkbox'
+               checked='checked'
+               id="checkbox#{day.last}"
+               value=day.last
+              ]
+
+        label for="checkbox#{day.last}"
+          = day.first
 
     .input-group-btn style='padding-top: 20px'
-      = f.submit 'Yes, order mealpass for me',
+      = f.submit 'Submit',
                  class: 'btn btn-default'
 
