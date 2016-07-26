@@ -115,6 +115,8 @@ class Orderer
     driver
       .spans(:css, '.meal')[pick_number]
       .button(text: 'RESERVE NOW').click
+
+    create_ordered_item(pick_number)
   end
 
   def log(message)
@@ -129,10 +131,26 @@ class Orderer
     driver.cookies.clear
   end
 
+  def create_ordered_item(pick_number)
+    meal_name =
+      driver
+        .spans(:css, '.meal')[pick_number]
+        .img.attribute_value('alt')
+
+    restaurant_name =
+      driver
+        .spans(:css, '.meal')[pick_number]
+        .div(:css, '.restaurant .name').text
+
+    user.ordered_items.create!(
+      name: meal_name,
+      restaurant_name: restaurant_name,
+      ordered_at: Time.zone.now
+    )
+  end
+
   def record_success
     log("Ordered lunch :)")
-
-    user.update!(last_ordered_at: Time.zone.now)
   end
 
   def log_error(e)
