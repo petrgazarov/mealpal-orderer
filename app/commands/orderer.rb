@@ -93,7 +93,9 @@ class Orderer
   def select_meal
     wait.until { driver.spans(:css, '.meal').length && driver.spans(:css, '.meal').length > 0 }
     sleep 10
+
     num_choices = driver.spans(:css, '.meal').length
+    num_choices = 10 if num_choices > 10
     pick_number = (0...num_choices).to_a.sample
 
     driver

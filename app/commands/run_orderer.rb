@@ -18,6 +18,7 @@ module Clockwork
 
         RETRY_ATTEMPTS.times do
           begin
+            # remove PhantomJS cookies
             system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
 
             break if Orderer.run(user)
