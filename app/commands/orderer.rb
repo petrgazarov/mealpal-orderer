@@ -112,11 +112,26 @@ class Orderer
       .lis.find { |li| li.text == '12:00pm-12:15pm' }
       .click
 
+    meal_name =
+      driver
+        .spans(:css, '.meal')[pick_number]
+        .img.attribute_value('alt')
+
+    restaurant_name =
+      driver
+        .spans(:css, '.meal')[pick_number]
+        .div(:css, '.restaurant')
+        .div(:css, '.name')
+        .text
+
     driver
       .spans(:css, '.meal')[pick_number]
       .button(text: 'RESERVE NOW').click
 
-    create_ordered_item(pick_number)
+    create_ordered_item(
+      name: meal_name,
+      restaurant_name: restaurant_name
+    )
   end
 
   def log(message)
@@ -131,21 +146,9 @@ class Orderer
     driver.cookies.clear
   end
 
-  def create_ordered_item(pick_number)
-    meal_name =
-      driver
-        .spans(:css, '.meal')[pick_number]
-        .img.attribute_value('alt')
-
-    restaurant_name =
-      driver
-        .spans(:css, '.meal')[pick_number]
-        .div(:css, '.restaurant .name').text
-
+  def create_ordered_item(ordered_item_attributes)
     user.ordered_items.create!(
-      name: meal_name,
-      restaurant_name: restaurant_name,
-      ordered_at: Time.zone.now
+      ordered_item_attributes.merge(ordered_at: Time.zone.now)
     )
   end
 
