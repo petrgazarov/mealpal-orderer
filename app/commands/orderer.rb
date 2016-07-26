@@ -15,16 +15,14 @@ class Orderer
 
   def run
     begin
+      log('Starting to order')
+
       # remove watir cookies
       delete_cookies
 
-      driver.goto "https://mealpass.com/login"
-
-      wait.until { driver.text.include? "Log in to your MealPass account" }
+      visit_login_page
 
       login
-
-      wait.until { driver.text.include? "WHAT'S FOR LUNCH ?" }
 
       raise 'Kitchen closed' if kitchen_closed?
 
@@ -36,29 +34,31 @@ class Orderer
 
       select_meal
 
-      log('Ordered :)')
+      record_success
       true
 
     rescue Exception => e
-      log(e)
-
-      false
+      log_error(e)
     ensure
-      puts 'closing driver'
-
-      driver.close
-
-      false
+      close_driver
     end
   end
 
   private
+
+  def visit_login_page
+    driver.goto "https://mealpass.com/login"
+
+    wait.until { driver.text.include? "Log in to your MealPass account" }
+  end
 
   def login
     driver.text_field(:name, "email").when_present.set(user.mealpass_email)
     driver.text_field(:name, "password").set(user.mealpass_password)
 
     driver.button(:text, "Log in").click
+
+    wait.until { driver.text.include? "WHAT'S FOR LUNCH ?" }
   end
 
   def meal_reserved?
@@ -118,7 +118,7 @@ class Orderer
   end
 
   def log(message)
-    log_entry = "\n===========================\n#{Time.now}\n#{message}"
+    log_entry = "\n===========================\n#{Time.zone.now}\nuser_id: #{user.id}\n#{message}"
 
     File.open('log/log.log', 'a') { |file| file << log_entry }
 
@@ -127,6 +127,26 @@ class Orderer
 
   def delete_cookies
     driver.cookies.clear
+  end
+
+  def record_success
+    log("Ordered lunch :)")
+
+    user.update!(last_ordered_at: Time.zone.now)
+  end
+
+  def log_error(e)
+    log(e)
+
+    false
+  end
+
+  def close_driver
+    log('closing driver')
+
+    driver.close
+
+    false
   end
 
   attr_reader :driver, :wait, :user
