@@ -152,6 +152,8 @@ GEM
     tilt (2.0.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2016.6)
+      tzinfo (>= 1.0.0)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
     watir-webdriver (0.9.1)
@@ -181,6 +183,8 @@ DEPENDENCIES
   slim
   spring
   sprockets-rails
+  tzinfo
+  tzinfo-data
   uglifier
   watir-webdriver
   web-console (~> 2.0)

@@ -1,6 +1,7 @@
 require 'clockwork'
 require './config/boot'
 require './config/environment'
+require 'tzinfo'
 
 module Clockwork
   RETRY_ATTEMPTS = 3
@@ -10,11 +11,11 @@ module Clockwork
   end
 
   every(1.day, 'Order mealpass', tz: 'America/New_York', at: '23:02') do
-    if [5, 6].include? Time.now.wday
+    if [5, 6].include?(TZInfo::Timezone.get('America/New_York').now.wday)
       puts 'not ordering today'
     else
       User.all.each do |user|
-        next unless user.order_days.include?((Time.now.wday + 1).to_s)
+        next unless user.order_days.include?((TZInfo::Timezone.get('America/New_York').now.wday + 1).to_s)
 
         RETRY_ATTEMPTS.times do
           begin

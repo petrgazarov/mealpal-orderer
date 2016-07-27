@@ -10,6 +10,8 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'sass-rails', '>= 3.2'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'font-awesome-rails'
+gem 'tzinfo'
+gem 'tzinfo-data'
 
 gem 'watir-webdriver'
 gem 'clockwork'
