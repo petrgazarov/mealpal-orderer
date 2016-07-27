@@ -14,7 +14,7 @@ module Clockwork
       puts 'not ordering today'
     else
       User.all.each do |user|
-        return unless user.order_days.include?((Time.now.wday + 1).to_s)
+        next unless user.order_days.include?((Time.now.wday + 1).to_s)
 
         RETRY_ATTEMPTS.times do
           begin
