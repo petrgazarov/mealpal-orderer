@@ -4,4 +4,6 @@ class User < ActiveRecord::Base
   validates_format_of :mealpass_email, :with => /@/
 
   has_many :ordered_items
+  has_many :order_days
+  accepts_nested_attributes_for :order_days
 end

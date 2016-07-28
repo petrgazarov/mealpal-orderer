@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   end
 
   def create
+    binding.pry
     if @user = find_user
       update_user!
     else
@@ -56,6 +57,10 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:mealpass_email, :mealpass_password, order_days: [])
+    params.require(:user).permit(:mealpass_email, :mealpass_password)
+  end
+
+  def order_days_params
+    params.require(:user).permit(order_days: [])
   end
 end

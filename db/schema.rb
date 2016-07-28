@@ -11,16 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726020720) do
+ActiveRecord::Schema.define(version: 20160728034719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "order_days", force: :cascade do |t|
-    t.integer  "value",      null: false
-    t.integer  "user_id",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "week_day_number",                             null: false
+    t.string   "integer",                                     null: false
+    t.text     "whitelist",       default: [],                             array: true
+    t.text     "blacklist",       default: [],                             array: true
+    t.string   "pick_up_time",    default: "12:00pm-12:15pm"
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
   create_table "ordered_items", force: :cascade do |t|

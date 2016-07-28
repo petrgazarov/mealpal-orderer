@@ -32,20 +32,41 @@
               label: false,
               placeholder: 'Mealpass password'
 
-    - [['Mon', 1], ['Tue', 2], ['Wed', 3], ['Thu', 4], ['Fri', 5]].each do |day|
-      .checkbox.checkbox-inline.checkbox-primary style='padding-top: 20px'
-        input[
-               name='user[order_days][]'
-               type='checkbox'
-               checked='checked'
-               id="checkbox#{day.last}"
-               value=day.last
-              ]
+    hr
+    br
 
-        label for="checkbox#{day.last}"
-          = day.first
+    = f.simple_fields_for :order_days do |ff|
+      .panel.panel-default style='margin-top: 20px;'
+        .panel-body
+          | For each day, you can enter a whitelist and a blacklist of foods. I will try my best here. 
+          br
+          | Enter values separated by commas, e.g. "Sandwich, Salad."
+
+      - [['Mon', 1], ['Tue', 2], ['Wed', 3], ['Thu', 4], ['Fri', 5]].each do |day|
+        .checkbox.checkbox-primary style='padding-top: 20px; display: flex; justify-content: row'
+          input[
+                 name='user[order_days_attributes][][week_day_number]'
+                 type='checkbox'
+                 checked='checked'
+                 id="checkbox#{day.last}"
+                 value=day.last
+                ]
+
+          label for="checkbox#{day.last}"
+            = day.first
+
+        = ff.input :whitelist,
+                   input_html: { class: 'form-control' },
+                   wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                   label: false,
+                   placeholder: 'Whitelist (optional)'
+
+        = ff.input :blacklist,
+                   input_html: { class: 'form-control' },
+                   wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                   label: false,
+                   placeholder: 'Blacklist (optional)'
 
     .input-group-btn style='padding-top: 20px'
       = f.submit 'Submit',
                  class: 'btn btn-default'
-
