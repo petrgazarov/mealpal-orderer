@@ -11,20 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160728034719) do
+ActiveRecord::Schema.define(version: 20160729020638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "order_days", force: :cascade do |t|
-    t.string   "week_day_number",                             null: false
-    t.string   "integer",                                     null: false
-    t.text     "whitelist",       default: [],                             array: true
-    t.text     "blacklist",       default: [],                             array: true
-    t.string   "pick_up_time",    default: "12:00pm-12:15pm"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.integer  "week_day_number",                                null: false
+    t.text     "whitelist",          default: [],                             array: true
+    t.text     "blacklist",          default: [],                             array: true
+    t.string   "pick_up_time",       default: "12:00pm-12:15pm"
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.integer  "user_id"
+    t.boolean  "scheduled_to_order", default: true
   end
+
+  add_index "order_days", ["user_id", "week_day_number"], name: "index_order_days_on_user_id_and_week_day_number", unique: true, using: :btree
 
   create_table "ordered_items", force: :cascade do |t|
     t.string   "name"
@@ -43,5 +46,6 @@ ActiveRecord::Schema.define(version: 20160728034719) do
     t.text     "order_days",        default: [],              array: true
   end
 
+  add_foreign_key "order_days", "users"
   add_foreign_key "ordered_items", "users"
 end
