@@ -17,19 +17,21 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      flash.now[:message] = 'success, record created!'
+      flash[:message] = "success, record created!"
 
-      render_new_on_success
+      redirect_to root_path
     else
       render_new_on_error
     end
   end
 
   def update_user!
-    if @user.update(user_params)
-      flash.now[:message] = 'success, record updated!'
+    @user.order_days.destroy_all
 
-      render_new_on_success
+    if @user.update(user_params)
+      flash[:message] = 'success, record updated!'
+
+      redirect_to root_path
     else
       render_new_on_error
     end
@@ -49,13 +51,13 @@ class UsersController < ApplicationController
     render :new
   end
 
-  def render_new_on_success
-    @user = User.new
-
-    render :new
+  def user_params
+    params
+      .require(:user)
+      .permit(:mealpass_email, :mealpass_password, order_days_attributes: [:scheduled_to_order, :whitelist, :blacklist, :week_day_number])
   end
 
-  def user_params
-    params.require(:user).permit(:mealpass_email, :mealpass_password, order_days: [])
+  def order_days_params
+    params.require(:user).permit(order_days_attributes: [])
   end
 end

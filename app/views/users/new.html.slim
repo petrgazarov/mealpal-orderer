@@ -15,7 +15,10 @@
     h2.alert.alert-danger
       = flash[:error]
 
-  = simple_form_for @user do |f|
+  = simple_form_for @user,
+                    url: users_path,
+                    method: :post do |f|
+
     = f.input :mealpass_email,
               type: :email,
               required: true,
@@ -32,20 +35,43 @@
               label: false,
               placeholder: 'Mealpass password'
 
-    - [['Mon', 1], ['Tue', 2], ['Wed', 3], ['Thu', 4], ['Fri', 5]].each do |day|
-      .checkbox.checkbox-inline.checkbox-primary style='padding-top: 20px'
-        input[
-               name='user[order_days][]'
-               type='checkbox'
-               checked='checked'
-               id="checkbox#{day.last}"
-               value=day.last
-              ]
+    hr
+    br
 
-        label for="checkbox#{day.last}"
-          = day.first
+    .panel.panel-default style='margin-top: 20px;'
+      .panel-body
+        | For each day, you can enter a whitelist and a blacklist of foods. I will try my best here. 
+        br
+        | Enter values separated by commas, e.g. "Sandwich, Salad".
+
+    = f.simple_fields_for :order_days do |ff|
+      = ff.input :week_day_number,
+                 as: :hidden
+
+      .checkbox.checkbox-primary style='padding-top: 20px; display: flex; justify-content: row'
+        = ff.check_box :scheduled_to_order,
+                   label: false,
+                   wrapper: false,
+                   id: "checkbox#{ff.object.week_day_number}",
+                   checked: ff.object.scheduled_to_order
+
+        = ff.label ff.object.week_day_word,
+                   for: "checkbox#{ff.object.week_day_number}"
+
+      = ff.input :whitelist,
+                 input_html: { class: 'form-control', value: ff.object.whitelist },
+                 wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                 label: false,
+                 placeholder: 'Whitelist (optional)'
+
+      = ff.input :blacklist,
+                 input_html: { class: 'form-control', value: ff.object.blacklist },
+                 wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                 label: false,
+                 placeholder: 'Blacklist (optional)'
 
     .input-group-btn style='padding-top: 20px'
       = f.submit 'Submit',
                  class: 'btn btn-default'
 
+    br
