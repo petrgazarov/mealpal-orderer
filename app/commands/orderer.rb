@@ -5,10 +5,11 @@ class Orderer
     new(user).run
   end
 
-  def initialize(user)
+  def initialize(user:, todays_order_day:)
     @driver = Watir::Browser.new :phantomjs
     @wait = Watir::Wait
     @user = user
+    @todays_order_day = todays_order_day
 
     driver.window.resize_to(1200, 1200)
   end
@@ -92,46 +93,77 @@ class Orderer
 
   def select_meal
     wait.until { driver.spans(:css, '.meal').length && driver.spans(:css, '.meal').length > 0 }
-    sleep 10
+    sleep 12
 
     num_choices = driver.spans(:css, '.meal').length
     num_choices = 20 if num_choices > 20
-    pick_number = (0...num_choices).to_a.sample
+    picked_choice_num = nil
 
-    driver
-      .spans(:css, '.meal')[pick_number]
-      .div(:css, '.address').click
+    num_choices.times do |choice_num|
+      name =
+        driver
+          .spans(:css, '.meal')[choice_num]
+          .img.attribute_value('alt')
 
-    driver
-      .spans(:css, '.meal')[pick_number]
-      .button(class_name: 'mp-pickup-button').click
+      if todays_order_day.whitelist.split(', ').any? { |item| name.downcase.include?(item.downcase) }
+        picked_choice_num = choice_num
 
-    driver
-      .spans(:css, '.meal')[pick_number]
-      .ul(:class_name => 'pickupTimes-list')
-      .lis.find { |li| li.text == '12:00pm-12:15pm' }
-      .click
+        break
+      end
+    end
 
-    meal_name =
+    begin
+      unless picked_choice_num
+        picked_choice_num = (0...num_choices).to_a.sample
+      end
+
+      meal_name =
+        driver
+          .spans(:css, '.meal')[picked_choice_num]
+          .img.attribute_value('alt')
+
+      restaurant_name =
+        driver
+          .spans(:css, '.meal')[picked_choice_num]
+          .div(:css, '.restaurant')
+          .div(:css, '.name')
+          .text
+
+      if todays_order_day.blacklist.split(', ').any? { |item| (meal_name + restaurant_name).downcase.include?(item.downcase) }
+        log "item #{meal_name} in #{restaurant_name} restaurant blacklisted."
+
+        raise ItemBlackListedError.new
+      end
+
       driver
-        .spans(:css, '.meal')[pick_number]
-        .img.attribute_value('alt')
+        .spans(:css, '.meal')[picked_choice_num]
+        .div(:css, '.address').click
 
-    restaurant_name =
       driver
-        .spans(:css, '.meal')[pick_number]
-        .div(:css, '.restaurant')
-        .div(:css, '.name')
-        .text
+        .spans(:css, '.meal')[picked_choice_num]
+        .button(class_name: 'mp-pickup-button').click
 
-    driver
-      .spans(:css, '.meal')[pick_number]
-      .button(text: 'RESERVE NOW').click
+      driver
+        .spans(:css, '.meal')[picked_choice_num]
+        .ul(:class_name => 'pickupTimes-list')
+        .lis.find { |li| li.text == '12:00pm-12:15pm' }
+        .click
 
-    create_ordered_item(
-      name: meal_name,
-      restaurant_name: restaurant_name
-    )
+      driver
+        .spans(:css, '.meal')[picked_choice_num]
+        .button(text: 'RESERVE NOW').click
+
+      wait.until { driver.text.include? 'Your meal is reserved!' }
+
+      create_ordered_item(
+        name: meal_name,
+        restaurant_name: restaurant_name
+      )
+    rescue ItemBlackListedError
+      picked_choice_num = nil
+
+      retry
+    end
   end
 
   def log(message)
@@ -170,5 +202,8 @@ class Orderer
     false
   end
 
-  attr_reader :driver, :wait, :user
+  attr_reader :driver, :wait, :user, :todays_order_day
+end
+
+class ItemBlackListedError < StandardError
 end

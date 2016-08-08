@@ -15,7 +15,10 @@
     h2.alert.alert-danger
       = flash[:error]
 
-  = simple_form_for @user do |f|
+  = simple_form_for @user,
+                    url: users_path,
+                    method: :post do |f|
+
     = f.input :mealpass_email,
               type: :email,
               required: true,
@@ -39,7 +42,7 @@
       .panel-body
         | For each day, you can enter a whitelist and a blacklist of foods. I will try my best here. 
         br
-        | Enter values separated by commas, e.g. "Sandwich, Salad". List whitelist items in the order of importance.
+        | Enter values separated by commas, e.g. "Sandwich, Salad".
 
     = f.simple_fields_for :order_days do |ff|
       = ff.input :week_day_number,
@@ -70,3 +73,5 @@
     .input-group-btn style='padding-top: 20px'
       = f.submit 'Submit',
                  class: 'btn btn-default'
+
+    br
