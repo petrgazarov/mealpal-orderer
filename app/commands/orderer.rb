@@ -100,12 +100,19 @@ class Orderer
     picked_choice_num = nil
 
     num_choices.times do |choice_num|
-      name =
+      meal_name =
         driver
           .spans(:css, '.meal')[choice_num]
           .img.attribute_value('alt')
 
-      if todays_order_day.whitelist.split(', ').any? { |item| name.downcase.include?(item.downcase) }
+      restaurant_name =
+        driver
+          .spans(:css, '.meal')[choice_num]
+          .div(:css, '.restaurant')
+          .div(:css, '.name')
+          .text
+
+      if todays_order_day.whitelist.split(', ').any? { |item| (meal_name + restaurant_name).downcase.include?(item.downcase) }
         picked_choice_num = choice_num
 
         break
