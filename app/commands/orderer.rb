@@ -29,6 +29,8 @@ class Orderer
 
       rate_meal if rate_meal_required?
 
+      raise 'Maximum number of meals used' if maximum_number_of_meals_used?
+
       raise 'Meal already reserved' if meal_reserved?
 
       enter_address
@@ -68,6 +70,10 @@ class Orderer
 
   def kitchen_closed?
     driver.text.include? 'The kitchen is closed'
+  end
+
+  def maximum_number_of_meals_used?
+    driver.text.include? 'You have reserved your maximum number of meals'
   end
 
   def rate_meal_required?
