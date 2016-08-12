@@ -2,11 +2,16 @@
   .panel.panel-default
     .panel-body
       | Enter your Mealpass credentials below and I will order a random mealpass for you for the days you select. 
-      | I usually run around 11pm the day before, and if I find out that you already ordered by then, I'll just stop there. 
+      | I usually run around 11pm the day before.
+      br
+      br
+      ul
+        li If I find out that you already ordered by then, I'll just stop there. 
+        li If you've used the maximum number of meals for the current cycle, I'll also won't do anything.
       br
       br
       | N.B. Entering existing information will update your record. 
-      | (to cancel, deselect all days)
+      | (to unsubscribe, enter your information and deselect all days)
 
   - if flash[:message]
     h2.alert.alert-success
@@ -40,9 +45,9 @@
 
     .panel.panel-default style='margin-top: 20px;'
       .panel-body
-        | For each day, you can enter a whitelist and a blacklist of foods. I will try my best here. 
+        | For each day, you can enter a whitelist and a blacklist. You can reference both meal names and restaurant names.
         br
-        | Enter values separated by commas, e.g. "Sandwich, Salad".
+        | Enter values separated by commas, e.g. "Sandwich, Salad, Aleo Restaurant".
 
     = f.simple_fields_for :order_days do |ff|
       = ff.input :week_day_number,
@@ -75,3 +80,10 @@
                  class: 'btn btn-default'
 
     br
+    br
+
+    div class='well well-sm'
+      p Fineprint:
+
+      p Not affiliated with Mealpass.
+      p Your password is stored as plain text. There is no public access to the database, however I recommend using a unique password that you don't use anywhere else.
