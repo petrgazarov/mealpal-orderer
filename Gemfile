@@ -15,6 +15,7 @@ gem 'tzinfo-data'
 
 gem 'watir-webdriver'
 gem 'clockwork'
+gem 'react-rails'
 
 group :production do
   gem 'rails_12factor'

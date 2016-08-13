@@ -55,7 +55,9 @@ GEM
       activesupport
       tzinfo
     coderay (1.1.1)
+    coffee-script-source (1.10.0)
     concurrent-ruby (1.0.2)
+    connection_pool (2.2.0)
     debug_inspector (0.0.2)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -119,6 +121,13 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.2.2)
+    react-rails (1.0.0)
+      coffee-script-source (~> 1.8)
+      connection_pool
+      execjs
+      rails (>= 3.1)
+      react-source (~> 0.13)
+    react-source (0.13.3)
     rubyzip (1.2.0)
     sass (3.4.22)
     sass-rails (5.0.6)
@@ -178,6 +187,7 @@ DEPENDENCIES
   puma
   rails (= 4.2.7)
   rails_12factor
+  react-rails
   sass-rails (>= 3.2)
   simple_form
   slim
@@ -190,4 +200,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
