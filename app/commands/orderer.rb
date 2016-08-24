@@ -92,7 +92,7 @@ class Orderer
   def enter_address
     driver
       .text_field { input(:placeholder => 'Search Location ...') }
-      .set('22 West 19th Street, New York, NY, United States')
+      .set(user.address)
 
     driver.send_keys :enter
   end

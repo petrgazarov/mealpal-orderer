@@ -7,7 +7,7 @@
       br
       ul
         li If I find out that you already ordered by then, I'll just stop there. 
-        li If you've used the maximum number of meals for the current cycle, I'll also won't do anything.
+        li If you've used the maximum number of meals for the current cycle, I also won't do anything.
       br
       br
       | N.B. Entering existing information will update your record. 
@@ -24,26 +24,41 @@
                     url: users_path,
                     method: :post do |f|
 
-    = f.input :mealpass_email,
-              type: :email,
+    = f.input :address,
               required: true,
               input_html: { class: 'form-control' },
-              wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
-              label: false,
-              placeholder: 'Mealpass email'
+              wrapper_html: { class: 'col-lg-12 col-md-12 col-sm-12', style: 'padding-bottom: 15px;' },
+              readonly: true,
+              placeholder: 'Enter your address'
 
-    = f.input :mealpass_password,
-              type: :password,
-              required: true,
-              input_html: { class: 'form-control' },
-              wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
-              label: false,
-              placeholder: 'Mealpass password'
-
-    hr
     br
 
-    .panel.panel-default style='margin-top: 20px;'
+    = f.label 'Mealpass credentials',
+      required: true,
+      class: 'col-lg-12 col-md-12 col-sm-12'
+
+    br
+
+    div
+      = f.input :mealpass_email,
+                type: :email,
+                required: true,
+                input_html: { class: 'form-control' },
+                wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                label: false,
+                placeholder: 'Mealpass email'
+
+      = f.input :mealpass_password,
+                type: :password,
+                required: true,
+                input_html: { class: 'form-control' },
+                wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                label: false,
+                placeholder: 'Mealpass password'
+
+    hr
+
+    .panel.panel-default style='margin-top: 100px;'
       .panel-body
         | For each day, you can enter a whitelist and a blacklist. You can reference both meal names and restaurant names.
         br
@@ -64,12 +79,14 @@
                    for: "checkbox#{ff.object.week_day_number}"
 
       = ff.input :whitelist,
+                 as: :string,
                  input_html: { class: 'form-control', value: ff.object.whitelist },
                  wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
                  label: false,
                  placeholder: 'Whitelist (optional)'
 
       = ff.input :blacklist,
+                 as: :string,
                  input_html: { class: 'form-control', value: ff.object.blacklist },
                  wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
                  label: false,

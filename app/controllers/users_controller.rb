@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def new
-    @user = User.new
+    @user = User.new(address: '22 West 19th Street, New York, NY, United States')
   end
 
   def create
@@ -54,10 +54,6 @@ class UsersController < ApplicationController
   def user_params
     params
       .require(:user)
-      .permit(:mealpass_email, :mealpass_password, order_days_attributes: [:scheduled_to_order, :whitelist, :blacklist, :week_day_number])
-  end
-
-  def order_days_params
-    params.require(:user).permit(order_days_attributes: [])
+      .permit(:mealpass_email, :mealpass_password, :address, order_days_attributes: [:scheduled_to_order, :whitelist, :blacklist, :week_day_number])
   end
 end
