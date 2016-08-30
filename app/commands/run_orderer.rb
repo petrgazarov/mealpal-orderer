@@ -13,6 +13,8 @@ module Clockwork
   every(1.day, 'Order mealpass', tz: 'America/New_York', at: '23:02') do
     return if tomorrow_is_weekend?
 
+    clean_up_events_table_if_too_big
+
     today = (TZInfo::Timezone.get('America/New_York').now.wday + 1)
 
     User.all.each do |user|
@@ -44,6 +46,12 @@ module Clockwork
         log_entry = "\n===========================\n#{Time.now}\n#{e.message}"
         File.open('log/log.log', 'a') { |file| file << log_entry }
       end
+    end
+  end
+
+  def clean_up_events_table_if_too_big
+    if ::Event.count > 9000
+      ::Event.find(:all, order: 'created_at desc', limit: 1000).destroy_all
     end
   end
 end
