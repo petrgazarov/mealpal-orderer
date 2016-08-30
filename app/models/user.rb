@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
 
   has_many :ordered_items, dependent: :destroy
   has_many :order_days, dependent: :destroy
+  has_many :events, dependent: :destroy
 
   accepts_nested_attributes_for :order_days
 

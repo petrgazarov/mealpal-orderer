@@ -110,7 +110,7 @@ class Orderer
     begin
       picked_choice_num = (0...num_choices).to_a.sample unless picked_choice_num
 
-      meal_name, restaurant_name = meal_name_and_restaurant_name(choice_num)
+      meal_name, restaurant_name = meal_name_and_restaurant_name(picked_choice_num)
 
       if blacklist_includes_item?(meal_name, restaurant_name)
         log "item #{meal_name} in #{restaurant_name} restaurant blacklisted."
