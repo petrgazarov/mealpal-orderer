@@ -199,11 +199,16 @@ class Orderer
   end
 
   def log(message)
-    log_entry = "\n===========================\n#{Time.zone.now}\nuser_id: #{user.id}\n#{message}"
+    create_event_for_user(message)
 
+    log_entry = "\n===========================\n#{Time.zone.now}\nuser_id: #{user.id}\n#{message}"
     File.open('log/log.log', 'a') { |file| file << log_entry }
 
     puts message
+  end
+
+  def create_event_for_user(message)
+    user.events.create!(details: message)
   end
 
   def delete_cookies
