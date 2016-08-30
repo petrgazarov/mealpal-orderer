@@ -99,84 +99,103 @@ class Orderer
 
   def select_meal
     wait.until { driver.spans(:css, '.meal').length && driver.spans(:css, '.meal').length > 0 }
-    sleep 12
+    sleep 15
 
     num_choices = driver.spans(:css, '.meal').length
     num_choices = 20 if num_choices > 20
-    picked_choice_num = nil
 
-    num_choices.times do |choice_num|
-      meal_name =
-        driver
-          .spans(:css, '.meal')[choice_num]
-          .img.attribute_value('alt')
+    picked_choice_num = picked_choice_num_from_whitelist(num_choices)
 
-      restaurant_name =
-        driver
-          .spans(:css, '.meal')[choice_num]
-          .div(:css, '.restaurant')
-          .div(:css, '.name')
-          .text
-
-      if todays_order_day.whitelist.split(', ').any? { |item| (meal_name + restaurant_name).downcase.include?(item.downcase) }
-        picked_choice_num = choice_num
-
-        break
-      end
-    end
 
     begin
-      unless picked_choice_num
-        picked_choice_num = (0...num_choices).to_a.sample
-      end
+      picked_choice_num = (0...num_choices).to_a.sample unless picked_choice_num
 
-      meal_name =
-        driver
-          .spans(:css, '.meal')[picked_choice_num]
-          .img.attribute_value('alt')
+      meal_name, restaurant_name = meal_name_and_restaurant_name(choice_num)
 
-      restaurant_name =
-        driver
-          .spans(:css, '.meal')[picked_choice_num]
-          .div(:css, '.restaurant')
-          .div(:css, '.name')
-          .text
-
-      if todays_order_day.blacklist.split(', ').any? { |item| (meal_name + restaurant_name).downcase.include?(item.downcase) }
+      if blacklist_includes_item?(meal_name, restaurant_name)
         log "item #{meal_name} in #{restaurant_name} restaurant blacklisted."
 
         raise ItemBlackListedError.new
       end
 
-      driver
-        .spans(:css, '.meal')[picked_choice_num]
-        .div(:css, '.address').click
-
-      driver
-        .spans(:css, '.meal')[picked_choice_num]
-        .button(class_name: 'mp-pickup-button').click
-
-      driver
-        .spans(:css, '.meal')[picked_choice_num]
-        .ul(:class_name => 'pickupTimes-list')
-        .lis.find { |li| li.text == '12:00pm-12:15pm' }
-        .click
-
-      driver
-        .spans(:css, '.meal')[picked_choice_num]
-        .button(text: 'RESERVE NOW').click
-
-      wait.until { driver.text.include? 'Your meal is reserved!' }
+      finish_selection(picked_choice_num)
 
       create_ordered_item(
         name: meal_name,
         restaurant_name: restaurant_name
       )
+
     rescue ItemBlackListedError
       picked_choice_num = nil
 
       retry
     end
+  end
+
+  def picked_choice_num_from_whitelist(num_choices)
+    return nil if todays_order_day.whitelist.empty?
+
+    (0...num_choices).to_a.shuffle.each do |choice_num|
+      if whitelist_includes_item?(choice_num)
+        return choice_num
+      end
+    end
+
+    nil
+  end
+
+  def whitelist_includes_item?(choice_num)
+    meal_name, restaurant_name = meal_name_and_restaurant_name(choice_num)
+
+    todays_order_day
+      .whitelist
+      .split(', ')
+      .any? { |item| (meal_name + restaurant_name).downcase.include?(item.downcase) }
+  end
+
+  def blacklist_includes_item?(meal_name, restaurant_name)
+    todays_order_day
+      .blacklist
+      .split(', ')
+      .any? { |item| (meal_name + restaurant_name).downcase.include?(item.downcase) }
+  end
+
+  def meal_name_and_restaurant_name(choice_num)
+    meal_name =
+      driver
+        .spans(:css, '.meal')[choice_num]
+        .img.attribute_value('alt')
+
+    restaurant_name =
+      driver
+        .spans(:css, '.meal')[choice_num]
+        .div(:css, '.restaurant')
+        .div(:css, '.name')
+        .text
+
+    [meal_name, restaurant_name]
+  end
+
+  def finish_selection(picked_choice_num)
+    driver
+      .spans(:css, '.meal')[picked_choice_num]
+      .div(:css, '.address').click
+
+    driver
+      .spans(:css, '.meal')[picked_choice_num]
+      .button(class_name: 'mp-pickup-button').click
+
+    driver
+      .spans(:css, '.meal')[picked_choice_num]
+      .ul(:class_name => 'pickupTimes-list')
+      .lis.find { |li| li.text == '12:00pm-12:15pm' }
+      .click
+
+    driver
+      .spans(:css, '.meal')[picked_choice_num]
+      .button(text: 'RESERVE NOW').click
+
+    wait.until { driver.text.include? 'Your meal is reserved!' }
   end
 
   def log(message)
