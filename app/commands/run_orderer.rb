@@ -26,11 +26,11 @@ module Clockwork
 
   private
 
-  def tomorrow_is_weekend?
+  def self.tomorrow_is_weekend?
     [5, 6].include?(TZInfo::Timezone.get('America/New_York').now.wday)
   end
 
-  def order_for_user(user, todays_order_day)
+  def self.order_for_user(user, todays_order_day)
     return unless todays_order_day.scheduled_to_order
 
     RETRY_ATTEMPTS.times do
@@ -49,7 +49,7 @@ module Clockwork
     end
   end
 
-  def clean_up_events_table_if_too_big
+  def self.clean_up_events_table_if_too_big
     if ::Event.count > 9000
       ::Event.find(:all, order: 'created_at desc', limit: 1000).destroy_all
     end
