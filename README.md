@@ -1,7 +1,7 @@
-## Mealpass Orderer
+## Mealpal Orderer
 
-### Orders mealpass for you (because you forgot again)
+### Orders mealpal meal for you (because you forgot again)
 
-### [LIVE SITE](https://mealpass-orderer.herokuapp.com/)
+### [LIVE SITE](https://mealpal-orderer.herokuapp.com/)
 
 

@@ -50,14 +50,14 @@ class Orderer
   private
 
   def visit_login_page
-    driver.goto "https://mealpass.com/login"
+    driver.goto "https://mealpal.com/login"
 
-    wait.until { driver.text.include? "Log in to your MealPass account" }
+    wait.until { driver.text.include? "Log in to your MealPal account" }
   end
 
   def login
-    driver.text_field(:name, "email").when_present.set(user.mealpass_email)
-    driver.text_field(:name, "password").set(user.mealpass_password)
+    driver.text_field(:name, "email").when_present.set(user.mealpal_email)
+    driver.text_field(:name, "password").set(user.mealpal_password)
 
     driver.button(:text, "Log in").click
 

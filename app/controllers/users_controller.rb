@@ -39,7 +39,7 @@ class UsersController < ApplicationController
 
   def find_user
     user_email_and_password = user_params.select do |key, _|
-      ['mealpass_email', 'mealpass_password'].include?(key)
+      ['mealpal_email', 'mealpal_password'].include?(key)
     end
 
     User.find_by(user_email_and_password)
@@ -54,6 +54,6 @@ class UsersController < ApplicationController
   def user_params
     params
       .require(:user)
-      .permit(:mealpass_email, :mealpass_password, :address, order_days_attributes: [:scheduled_to_order, :whitelist, :blacklist, :week_day_number])
+      .permit(:mealpal_email, :mealpal_password, :address, order_days_attributes: [:scheduled_to_order, :whitelist, :blacklist, :week_day_number])
   end
 end

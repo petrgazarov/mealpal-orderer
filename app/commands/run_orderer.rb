@@ -10,7 +10,7 @@ module Clockwork
     puts "Running #{job}"
   end
 
-  every(1.day, 'Order mealpass', tz: 'America/New_York', at: '23:02') do
+  every(1.day, 'Order mealpal', tz: 'America/New_York', at: '23:02') do
     return if tomorrow_is_weekend?
 
     clean_up_events_table_if_too_big
