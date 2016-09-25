@@ -7,16 +7,17 @@ gem 'slim'
 gem 'simple_form'
 gem 'uglifier'
 gem 'puma'
-gem 'bootstrap-sass', '~> 3.3.6'
-gem 'sass-rails', '>= 3.2'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
-gem 'font-awesome-rails'
 gem 'tzinfo'
 gem 'tzinfo-data'
 
+# styles
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'sass-rails', '>= 3.2'
+gem 'font-awesome-rails'
+
 gem 'watir-webdriver'
 gem 'clockwork'
-gem 'devise'
 
 group :production do
   gem 'rails_12factor'

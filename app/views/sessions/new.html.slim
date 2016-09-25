@@ -1,0 +1,31 @@
+.col-sm-12.col-xs-12
+  h1 style='text-align: center;'
+    ' Log in to Mealpal Orderer
+
+  .panel.panel-default style='margin-top: 24px;'
+    .panel-body
+
+      = simple_form_for @user,
+                        url: session_path,
+                        method: :post do |f|
+
+        = f.input :mealpal_email,
+                  type: :email,
+                  required: true,
+                  input_html: { class: 'form-control' },
+                  wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                  label: false,
+                  placeholder: 'Mealpal email'
+
+        = f.input :mealpal_password,
+                  type: :password,
+                  required: true,
+                  input_html: { class: 'form-control' },
+                  wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
+                  label: false,
+                  placeholder: 'Mealpal password'
+
+        = f.submit 'Submit',
+                   class: 'btn btn-primary btn-lg col-lg-4 col-md-4 col-sm-6 col-xs-6 center-block',
+                   style: 'margin: 20px 12px 0px 12px;'
+

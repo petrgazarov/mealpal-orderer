@@ -1,0 +1,17 @@
+div.jumbotron
+  h1 style='text-align: center;'
+    ' Welcome to Mealpal Orderer
+
+  div style=''
+    div.col-md-6.col-lg-6
+      = image_tag "mealpal_orderer_gifs/#{(1..5).to_a.sample}.gif", class: 'mealpal-gif'
+
+    div.row style='padding-top: 48px;'
+      div.col-xs-6.col-md-3
+        = link_to new_session_path, class: 'thumbnail' do
+          h2 style='text-align: center;'
+            ' Log In
+      div.col-xs-6.col-md-3
+        = link_to new_user_path, class: 'thumbnail' do
+          h2 style='text-align: center;'
+            ' Sign Up

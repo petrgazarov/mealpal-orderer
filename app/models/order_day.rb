@@ -34,6 +34,10 @@ class OrderDay < ActiveRecord::Base
     }[week_day_number]
   end
 
+  def user_profile_display_css
+    scheduled_to_order? ? 'background-color: #90EE90;' : 'background-color: #C0C0C0;'
+  end
+
   private
 
   def whitelist_is_array

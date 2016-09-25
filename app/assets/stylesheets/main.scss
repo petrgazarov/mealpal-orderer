@@ -1,3 +1,10 @@
 .mealpal-gif {
   max-width: 100%;
+  padding-top: 12px;
+}
+
+.show-order-days {
+  @media (min-width: $screen-md-min) {
+    display: flex;
+  }
 }
