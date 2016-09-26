@@ -33,12 +33,18 @@ module Clockwork
   def self.order_for_user(user, todays_order_day)
     return unless todays_order_day.scheduled_to_order
 
+    ordered = false
+
     RETRY_ATTEMPTS.times do
       begin
         # remove PhantomJS cookies
         system 'rm $HOME/.local/share/Ofi\ Labs/PhantomJS/*'
 
-        break if Orderer.run(user: user, todays_order_day: todays_order_day)
+        if Orderer.run(user: user, todays_order_day: todays_order_day)
+          ordered = true
+
+          break
+        end
 
       rescue Exception => e
         user.events.create!(details: e.message)
@@ -46,6 +52,12 @@ module Clockwork
         log_entry = "\n===========================\n#{Time.now}\n#{e.message}"
         File.open('log/log.log', 'a') { |file| file << log_entry }
       end
+    end
+
+    if ordered
+      AdminMailer.send_status_report_success(user).deliver
+    else
+      AdminMailer.send_status_report_error(user).deliver
     end
   end
 

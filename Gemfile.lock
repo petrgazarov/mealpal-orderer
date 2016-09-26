@@ -176,6 +176,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.3.6)
   clockwork
   font-awesome-rails
+  mail
   pg (~> 0.15)
   pry
   puma

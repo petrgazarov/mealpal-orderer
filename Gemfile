@@ -19,7 +19,10 @@ gem 'font-awesome-rails'
 
 gem 'watir-webdriver'
 gem 'clockwork'
+
+# emailing
 gem 'sendgrid-ruby'
+gem 'mail'
 
 group :production do
   gem 'rails_12factor'
