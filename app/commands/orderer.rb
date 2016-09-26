@@ -61,7 +61,7 @@ class Orderer
 
     driver.button(:text, "Log in").click
 
-    wait.until { driver.text.include? "WHAT'S FOR LUNCH ?" }
+    wait.until { driver.text.include? "Favorites" }
   end
 
   def meal_reserved?
@@ -91,7 +91,7 @@ class Orderer
 
   def enter_address
     driver
-      .text_field { input(:placeholder => 'Search Location ...') }
+      .text_field { input(:placeholder => 'Search by location') }
       .set(user.address)
 
     driver.send_keys :enter
@@ -179,7 +179,7 @@ class Orderer
   def finish_selection(picked_choice_num)
     driver
       .spans(:css, '.meal')[picked_choice_num]
-      .div(:css, '.address').click
+      .div(:css, '.image').click
 
     driver
       .spans(:css, '.meal')[picked_choice_num]
