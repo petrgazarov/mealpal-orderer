@@ -17,11 +17,20 @@ html
           data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"
          ]
 
-    .container
-      .page-header style='padding-top: 56px'
-        h1 Welcome to Mealpal Orderer
+    - if logged_in?
+      = button_to 'Log out',
+                  '/session',
+                  class: 'btn btn-primary btn-lg',
+                  method: :delete,
+                  style: 'float: right; margin: 12px 24px 0 0;'
 
-      = image_tag 'mealpal-orderer.gif', class: 'mealpal-gif'
+    .container style='padding-top: 56px'
+
+      - if flash[:message]
+        h2.alert.alert-success
+          = flash[:message]
+      - if flash[:error]
+        h2.alert.alert-danger
+          = flash[:error]
 
       = yield
-

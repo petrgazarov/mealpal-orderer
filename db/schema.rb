@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160924215241) do
+ActiveRecord::Schema.define(version: 20160925233115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,12 +46,12 @@ ActiveRecord::Schema.define(version: 20160924215241) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "mealpal_email",                 null: false
-    t.string   "mealpal_password",              null: false
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-    t.text     "order_days",       default: [],              array: true
+    t.string   "mealpal_email",    null: false
+    t.string   "mealpal_password", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.string   "address"
+    t.string   "session_token"
   end
 
   add_foreign_key "order_days", "users"

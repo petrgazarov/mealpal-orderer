@@ -1,0 +1,44 @@
+.col-sm-12.col-xs-12
+  h1 style='text-align: center;'
+    ' Hey,
+    = @user.mealpal_email
+
+  .panel.panel-default
+    .panel-body
+      h3 style='text-align: center;'
+        | Basic Info
+
+      h4 Email:
+      h5 = @user.mealpal_email
+
+      h4 Address:
+      h5 = @user.address
+
+      h4 Pick up time:
+      h5 12:00pm-12:15pm
+
+      div
+        = link_to 'Edit', edit_user_path(@user), class: 'btn btn-primary btn-lg'
+
+      h3 style='text-align: center;'
+        | Meal preferences
+
+      br
+
+      div.show-order-days
+        - @user.order_days.order(:week_day_number).each do |order_day|
+          .panel.panel-default.col-xs-12.col-sm-12 style="#{order_day.user_profile_display_css}"
+            .panel-body
+              div
+                h4
+                  = order_day.week_day_word
+
+                p
+                  ' Whitelist:
+                  = order_day.whitelist
+                p
+                  ' Blacklist:
+                  = order_day.blacklist
+
+      div style='clear: both;'
+        = link_to 'Edit', edit_user_path(@user), class: 'btn btn-primary btn-lg'

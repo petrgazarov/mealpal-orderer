@@ -1,20 +1,10 @@
 .col-sm-12.col-xs-12
   h1 style='text-align: center;'
-    ' Sign up to order your lunch
-
-  .panel.panel-default
-    .panel-body
-      | Enter your Mealpal credentials below and I will order a random mealpal for you for the days you select. 
-      | I usually run around 11pm the day before.
-      br
-      br
-      ul
-        li If I find out that you already ordered by then, I'll just stop there. 
-        li If you've used the maximum number of meals for the current cycle, I also won't do anything.
+    ' Edit your info
 
   = simple_form_for @user,
-                    url: users_path,
-                    method: :post do |f|
+                    url: user_path(@user),
+                    method: :patch do |f|
 
     = f.input :address,
               required: true,
@@ -41,12 +31,11 @@
                 placeholder: 'Mealpal email'
 
       = f.input :mealpal_password,
-                type: :password,
                 required: true,
                 input_html: { class: 'form-control' },
                 wrapper_html: { class: 'col-lg-6 col-md-6 col-sm-6' },
                 label: false,
-                placeholder: 'Mealpal password'
+                placeholder: 'Re-enter Mealpal password'
 
     hr
 
@@ -56,7 +45,7 @@
         br
         | Enter values separated by commas, e.g. "Sandwich, Salad, Aleo Restaurant".
 
-    = f.simple_fields_for :order_days do |ff|
+    = f.simple_fields_for :order_days, f.object.order_days.order(:week_day_number) do |ff|
       = ff.input :week_day_number,
                  as: :hidden
 
@@ -90,8 +79,3 @@
 
     br
     br
-
-    div class='well well-sm'
-      p Note:
-
-      p Your password is stored as plain text. There is no public access to the database, however I recommend using a unique password that you don't use anywhere else.
