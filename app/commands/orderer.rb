@@ -16,7 +16,7 @@ class Orderer
 
   def run
     begin
-      log('Starting to order')
+      log("Starting to order for #{user.mealpal_email}")
 
       # remove watir cookies
       delete_cookies
@@ -86,7 +86,7 @@ class Orderer
     # rate as a medium size portion
     driver.spans(class_name: 'portion ng-scope')[1].click
 
-    driver.button(:text, "SUBMIT").click
+    driver.span(:text, "SUBMIT").click
   end
 
   def enter_address
