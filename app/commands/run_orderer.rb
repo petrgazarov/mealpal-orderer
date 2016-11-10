@@ -54,16 +54,20 @@ module Clockwork
       end
     end
 
-    if ordered
-      AdminMailer.send_status_report_success(user).deliver
-    else
-      AdminMailer.send_status_report_error(user).deliver
-    end
+    send_email(ordered) if ENV['ADMIN_EMAIL_REPORTS']
   end
 
   def self.clean_up_events_table_if_too_big
     if ::Event.count > 9000
       ::Event.find(:all, order: 'created_at desc', limit: 1000).destroy_all
+    end
+  end
+
+  def self.send_email(ordered)
+    if ordered
+      AdminMailer.send_status_report_success(user).deliver
+    else
+      AdminMailer.send_status_report_error(user).deliver
     end
   end
 end
