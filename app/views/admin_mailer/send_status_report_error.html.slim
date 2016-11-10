@@ -1,0 +1,29 @@
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+  body
+    h1
+      | Status report
+
+    p
+      | Error occured and lunch wasn't orderer for user #{@user.mealpal_email}
+
+    br
+
+    p
+      | Last three events:
+    ul
+      = @user.events.order(created_at: :desc).limit(3).each do |event|
+        li
+          = event.details
+
+    hr
+
+    p
+      ' Sent from
+      a href='https://github.com/petrgazarov/mealpal-orderer'
+        | Mealpal orderer
+
+    p
+      | Do not reply to this email
+

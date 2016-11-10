@@ -8,6 +8,7 @@ gem 'simple_form'
 gem 'uglifier'
 gem 'puma'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
+
 gem 'tzinfo'
 gem 'tzinfo-data'
 
@@ -18,6 +19,10 @@ gem 'font-awesome-rails'
 
 gem 'watir-webdriver'
 gem 'clockwork'
+
+# emailing
+gem 'sendgrid-ruby'
+gem 'mail'
 
 group :production do
   gem 'rails_12factor'

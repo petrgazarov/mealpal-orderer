@@ -18,3 +18,5 @@
 
 # address heroku warnings
 /vendor/bundle
+
+.DS_Store

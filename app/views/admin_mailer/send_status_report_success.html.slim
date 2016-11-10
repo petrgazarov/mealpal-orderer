@@ -1,0 +1,39 @@
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+  body
+    h1
+      | Status report
+
+    p
+      | Successfully ordered for user #{@user.mealpal_email}
+
+    p
+      ' Item:
+      = @ordered_item.name
+    p
+      ' Ordered at:
+      = @ordered_item.created_at
+    p
+      ' Restaurant name:
+      = @ordered_item.restaurant_name
+    h5
+      | User preferences for today
+    p
+      ' Whitelist:
+      = @user_preferences.whitelist
+    p
+      ' Blacklist:
+      = @user_preferences.blacklist
+
+    br
+    hr
+
+    p
+      ' Sent from
+      a href='https://github.com/petrgazarov/mealpal-orderer'
+        | Mealpal orderer
+
+    p
+      | Do not reply to this email
+
