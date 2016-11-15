@@ -54,7 +54,7 @@ module Clockwork
       end
     end
 
-    send_email(ordered) if ENV['ADMIN_EMAIL_REPORTS']
+    send_email(ordered, user) if ENV['ADMIN_EMAIL_REPORTS']
   end
 
   def self.clean_up_events_table_if_too_big
@@ -63,7 +63,7 @@ module Clockwork
     end
   end
 
-  def self.send_email(ordered)
+  def self.send_email(ordered, user)
     if ordered
       AdminMailer.send_status_report_success(user).deliver
     else
