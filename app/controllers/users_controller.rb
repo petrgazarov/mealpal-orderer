@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
       flash[:message] = "success, record created!"
 
-      # UserMailer.send_signup_email(@user).deliver_now!
+      UserMailer.send_signup_email(@user).deliver_now!
 
       redirect_to user_path(@user)
     else
