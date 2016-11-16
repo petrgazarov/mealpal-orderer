@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
     self.save!
   end
 
+  def order_early?
+    early_order
+  end
+
   private
 
   def self.generate_session_token

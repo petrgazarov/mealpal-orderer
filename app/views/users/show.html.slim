@@ -17,6 +17,9 @@
       h4 Pick up time:
       h5 12:00pm-12:15pm
 
+      h4 Run orderer at:
+      h5 = @user.early_order ? '5pm' : '11pm'
+
       div
         = link_to 'Edit', edit_user_path(@user), class: 'btn btn-primary btn-lg'
 

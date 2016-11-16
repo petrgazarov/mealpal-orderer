@@ -8,3 +8,9 @@
     display: flex;
   }
 }
+
+.clearfix {
+  content: '';
+  display: block;
+  clear: both;
+}

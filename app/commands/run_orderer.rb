@@ -10,7 +10,7 @@ module Clockwork
     puts "Running #{job}"
   end
 
-  every(1.day, 'Order mealpal', tz: 'America/New_York', at: '23:02') do
+  every(1.day, 'Order mealpal - 5pm', tz: 'America/New_York', at: '17:02') do
     return if tomorrow_is_weekend?
 
     clean_up_events_table_if_too_big
@@ -18,6 +18,24 @@ module Clockwork
     today = (TZInfo::Timezone.get('America/New_York').now.wday + 1)
 
     User.all.each do |user|
+      next unless user.order_early?
+
+      todays_order_day = user.order_days.find { |od| od.week_day_number == today }
+
+      order_for_user(user, todays_order_day)
+    end
+  end
+
+  every(1.day, 'Order mealpal - 11pm', tz: 'America/New_York', at: '23:02') do
+    return if tomorrow_is_weekend?
+
+    clean_up_events_table_if_too_big
+
+    today = (TZInfo::Timezone.get('America/New_York').now.wday + 1)
+
+    User.all.each do |user|
+      next if user.order_early?
+
       todays_order_day = user.order_days.find { |od| od.week_day_number == today }
 
       order_for_user(user, todays_order_day)

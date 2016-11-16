@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
       flash[:message] = "success, record created!"
 
-      UserMailer.send_signup_email(@user).deliver_now!
+      # UserMailer.send_signup_email(@user).deliver_now!
 
       redirect_to user_path(@user)
     else
@@ -56,6 +56,12 @@ class UsersController < ApplicationController
   def user_params
     params
       .require(:user)
-      .permit(:mealpal_email, :mealpal_password, :address, order_days_attributes: [:id, :scheduled_to_order, :whitelist, :blacklist, :week_day_number])
+      .permit(
+        :mealpal_email,
+        :mealpal_password,
+        :address,
+        :early_order,
+        order_days_attributes: [:id, :scheduled_to_order, :whitelist, :blacklist, :week_day_number]
+      )
   end
 end
