@@ -11,7 +11,7 @@
   "website": "https://github.com/petrgazarov/mealpal-orderer",
   "repository": "https://github.com/petrgazarov/mealpal-orderer",
   "scripts": {
-    "postdeploy": "bundle exec rake bootstrap"
+    "postdeploy": "bundle exec rake db:setup && bundle exec rake db:migrate"
   },
   "buildpacks": [
     {
