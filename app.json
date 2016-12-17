@@ -13,6 +13,9 @@
   "scripts": {
     "postdeploy": "bundle exec rake db:setup && bundle exec rake db:migrate"
   },
+  "addons": [
+    "heroku-postgresql:hobby-dev"
+  ],
   "buildpacks": [
     {
       "url": "https://github.com/heroku/heroku-buildpack-ruby.git"
