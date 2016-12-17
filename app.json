@@ -1,0 +1,24 @@
+{
+  "name": "Mealpal Orderer",
+  "description": "Orders mealpal meal for you (because you forgot again)",
+  "keywords": [
+    "Mealpal",
+    "Lunch",
+    "Mealpass",
+    "Automation",
+    "Ordering"
+  ],
+  "website": "https://github.com/petrgazarov/mealpal-orderer",
+  "repository": "https://github.com/petrgazarov/mealpal-orderer",
+  "scripts": {
+    "postdeploy": "bundle exec rake bootstrap"
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-ruby.git"
+    },
+    {
+      "url": "https://github.com/stomita/heroku-buildpack-phantomjs"
+    }
+  ]
+}
