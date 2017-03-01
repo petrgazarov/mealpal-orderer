@@ -4,7 +4,7 @@
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-### [LIVE SITE](https://mealpal-orderer.herokuapp.com/)
+### [LIVE SITE (demo only)](https://mealpal-orderer.herokuapp.com/)
 
 ### Email Integration (Sendgrid)
 The app has [Sendgrid](https://app.sendgrid.com/) integration and can send "Thank you" emails to users who sign up.
