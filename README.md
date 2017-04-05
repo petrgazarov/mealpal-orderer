@@ -1,3 +1,5 @@
+_Note: I'm no longer actively monitoring this project (as I don't use Mealpal anymore). Feel free to send pull request with bug fixes though._
+
 ## Mealpal Orderer
 
 ### Orders mealpal lunch for you (because you forgot again)
